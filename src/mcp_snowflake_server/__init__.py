@@ -86,6 +86,18 @@ def main():
 
     connection_args = {**connection_args_from_env, **connection_args}
 
+    # Log the final connection configuration
+    import logging
+    logger = logging.getLogger("mcp_snowflake_server")
+    config_to_log = {k: v for k, v in connection_args.items() 
+                    if k not in ['password', 'token', 'private_key']}
+    logger.info(f"Final connection configuration: {config_to_log}")
+    
+    # Log externalbrowser authentication info
+    logger.info("Using externalbrowser authentication (SSO/Okta)")
+    logger.info("A browser window will open for first-time authentication")
+    logger.info("Subsequent runs will use cached tokens")
+
     assert (
         "database" in connection_args
     ), 'You must provide the account identifier as "--database" argument or "SNOWFLAKE_DATABASE" environment variable.'

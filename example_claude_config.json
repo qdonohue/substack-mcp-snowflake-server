@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "snowflake": {
+      "command": "/opt/homebrew/bin/uv",
+      "args": [
+        "--directory",
+        "/Users/quinndonohue/Development/mcp/substack-mcp-snowflake-server",
+        "run",
+        "mcp_snowflake_server",
+        "--no-prefetch"
+      ]
+    }
+  }
+}

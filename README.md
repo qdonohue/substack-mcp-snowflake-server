@@ -7,7 +7,7 @@
 ---
 
 ## Overview
-A Model Context Protocol (MCP) server implementation that provides database interaction with Snowflake. This server enables running SQL queries via tools and exposes data insights and schema context as resources.
+A Model Context Protocol (MCP) server implementation that provides secure, read-only database interaction with Snowflake using SSO/Okta authentication. This server enables running SQL queries via tools and exposes data insights and schema context as resources.
 
 ---
 
@@ -107,8 +107,7 @@ npx -y @smithery/cli install mcp_snowflake_server --client claude
       "mcp_snowflake_server",
       "--account", "your_account",
       "--warehouse", "your_warehouse",
-      "--user", "your_user",
-      "--password", "your_password",
+      "--user", "your_user@email.com",
       "--role", "your_role",
       "--database", "your_database",
       "--schema", "your_schema"
@@ -142,9 +141,12 @@ SNOWFLAKE_ROLE="xxx"
 SNOWFLAKE_DATABASE="xxx"
 SNOWFLAKE_SCHEMA="xxx"
 SNOWFLAKE_WAREHOUSE="xxx"
-SNOWFLAKE_PASSWORD="xxx"
-# Alternatively, use external browser authentication:
-# SNOWFLAKE_AUTHENTICATOR="externalbrowser"
+SNOWFLAKE_AUTHENTICATOR="externalbrowser"
+
+# Token Caching: After authenticating once, tokens are cached locally
+# Run the server manually first to authenticate:
+#   uv run mcp_snowflake_server
+# Then Claude Desktop can use the cached token without browser popups
 ```
 
 4. [Optional] Modify `runtime_config.json` to set exclusion patterns for databases, schemas, or tables.
@@ -178,7 +180,9 @@ uv --directory /absolute/path/to/mcp_snowflake_server run mcp_snowflake_server
 
 ## Notes
 
-- By default, **write operations are disabled**. Enable them explicitly with `--allow-write`.
+- **Write operations are permanently disabled** for safety. The `--allow-write` flag has no effect.
+- The server uses **externalbrowser authentication** (SSO/Okta) exclusively.
+- Authentication tokens are cached locally after first login.
 - The server supports filtering out specific databases, schemas, or tables via exclusion patterns.
 - The server exposes additional per-table context resources if prefetching is enabled.
 - The `append_insight` tool updates the `memo://insights` resource dynamically.
